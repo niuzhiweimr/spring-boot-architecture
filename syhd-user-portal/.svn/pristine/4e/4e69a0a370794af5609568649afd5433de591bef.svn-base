@@ -1,0 +1,36 @@
+package com.syhd.portal.action;
+
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.syhd.portal.constant.ConstantPage;
+import com.syhd.portal.service.IUserService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+//测试视图
+@RequestMapping("/uportal")
+@Controller
+public class LoginAction {
+
+    private Logger logger = Logger.getLogger(UserAction.class);
+
+    @Autowired
+    private IUserService userService;
+
+    // 城市页面
+    @GetMapping(value = "/login",produces = "text/html")
+    public ModelAndView city(HttpServletRequest request, HttpServletResponse response) {
+        ModelAndView mav = new ModelAndView(ConstantPage.LOGIN);
+        Map<String, Object> map = mav.getModel();
+        map.put("code", 200);
+        mav.setStatus(HttpStatus.OK);
+        return  mav;
+    }
+}

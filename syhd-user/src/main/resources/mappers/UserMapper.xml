@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- userMap 组织映射文件 -->
+<mapper namespace="com.syhd.user.mapper.IUserMapper">
+	<resultMap type="com.syhd.user.dto.UserDto" id="UserDtoMap">
+		<result property="id" column="id" jdbcType="VARCHAR" javaType="String" />
+		<result property="name" column="name" jdbcType="VARCHAR" javaType="String" />
+        <result property="pwd" column="pwd" jdbcType="VARCHAR" javaType="String" />
+        <result property="headimageUrl" column="headimage_url" jdbcType="VARCHAR" javaType="String" />
+        <result property="nickname" column="nickname" jdbcType="VARCHAR" javaType="String" />
+        <result property="registerType" column="register_type" jdbcType="TINYINT" javaType="Integer" />
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP" javaType="String" />
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" javaType="String" />
+        <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP" javaType="String" />
+        <result property="status" column="status" jdbcType="TINYINT" javaType="Integer" />
+        <result property="sex" column="sex" jdbcType="TINYINT" javaType="Integer" />
+        <result property="score" column="score" jdbcType="TINYINT" javaType="Integer" />
+        <result property="province" column="province" jdbcType="VARCHAR" javaType="String" />
+        <result property="city" column="city" jdbcType="VARCHAR" javaType="String" />
+        <result property="ip" column="ip" jdbcType="VARCHAR" javaType="String" />
+        <result property="tel" column="tel" jdbcType="VARCHAR" javaType="String" />
+        <result property="platform" column="platform" jdbcType="TINYINT" javaType="Integer" />
+        <result property="tel" column="tel" jdbcType="VARCHAR" javaType="String" />
+        <result property="description" column="description" jdbcType="VARCHAR" javaType="String" />
+        <result property="syhdUserGroupId" column="syhd_user_group_id" jdbcType="VARCHAR" javaType="String" />
+        <result property="syhdUserLevelId" column="syhd_user_level_id" jdbcType="VARCHAR" javaType="String" />
+	</resultMap>
+	<sql id="getUserDto">
+        SELECT
+            u.id,u.name,u.pwd,u.headimage_url,u.nickname,u.register_type,DATE_FORMAT(u.register_time,'%Y-%m-%d %H:%i:%s') AS register_time
+            , DATE_FORMAT(u.update_time,'%Y-%m-%d %H:%i:%s') AS update_time,DATE_FORMAT(u.last_login_time,'%Y-%m-%d %H:%i:%s') AS last_login_time
+            ,u.status,u.sex,u.score,u.province,u.city,u.ip,u.tel,u.platform,u.description,u.syhd_user_group_id,u.syhd_user_level_id
+        FROM
+            syhd_user AS u
+	</sql>
+	<!-- 通过uid获取userEbo对象 -->
+	<select id="getUserById" resultMap="UserDtoMap" flushCache="true" useCache="false" >
+        <include refid="getUserDto"/>
+        <where>
+        	<if test=" id != null and id != ''  ">
+                 u.id = '${id}'
+          	</if>
+        </where>
+    </select>
+    <!-- 添加一个用户 -->
+   <!-- <insert id="addUser" parameterType="com.syhd.user.model.UserEbo" useGeneratedKeys="true" keyProperty="uid" >
+		INSERT INTO t_user
+		VALUES(
+			0,#{userName},#{nickName},#{password},#{email},#{mobileNum},#{userType},#{status}
+		)
+	</insert>-->
+</mapper>
+

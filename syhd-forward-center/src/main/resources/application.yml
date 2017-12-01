@@ -1,0 +1,63 @@
+ server:  
+   port: 8991
+
+ spring:
+  application:
+    name: syhd-forward
+
+ eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://syhduser:syhd1234@localhost:8766/eureka/ #http://syhduser:syhd1234@118.190.157.94/eureka/(服务端配置)
+    healthcheck:
+      enabled: true  #只应该在application.yml中设置。如果设置在bootstrap.yml中将会导致一些不良的副作用，例如在Eureka中注册的应用名称是UNKNOWN等
+  instance:
+    prefer-ip-address: true
+    instanceId: ${spring.application.name}:${spring.cloud.client.ipAddress}:${spring.application.instance_id:${server.port}}
+    appname: syhd-forward
+
+  # 定义一个针对service-by-properties服务的负载均衡器。服务实例信息来自配置文件
+  # 服务名 eureka上注册的服务名称
+  syhd-user-portal:
+    listOfServers:
+    ribbon:
+      # 负载策略 设定 RoundRobinRule:轮询   RandomRule:随机
+      NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+      # 设置它的服务实例信息来自配置文件, 如果不设置NIWSServerListClassName就会去euereka里面找
+      #NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+  # 定义一个针对service-by-properties服务的负载均衡器。服务实例信息来自配置文件
+  # 服务名
+  syhd-user:
+    listOfServers:
+    ribbon:
+      # 负载策略 设定 RoundRobinRule:轮询   RandomRule:随机
+      NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+      # 设置它的服务实例信息来自配置文件, 如果不设置NIWSServerListClassName就会去euereka里面找 设置这个 必须在配置文件中声明转发地址
+      #NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+
+  ribbon:
+    # 开启eureka与ribbon的集成
+    eureka:
+      enabled: true
+    # 暂不开启熔断机制
+    hystrix:
+      enabled: true
+    # 配置ribbon默认的超时时间
+    ConnectTimeout: 5000
+    ReadTimeout: 3000
+    # 是否开启重试
+    OkToRetryOnAllOperations: true
+    # 重试期间，实例切换次数  比如：100个实例，我只会在四个实例上面去重试
+    MaxAutoRetriesNextServer: 3
+    # 当前实例重试次数
+    MaxAutoRetries: 3
+
+  hystrix:
+    command:
+      default:
+        execution:
+          timeout:
+            enabled: true
+          isolation:
+            thread:
+              timeoutInMilliseconds: 60000  #配置熔断器超时时间

@@ -1,0 +1,33 @@
+#service port config
+server.port=8766
+
+#eureka main path config
+#eureka.dashboard.path=/syhd-register-center
+
+#Unregister oneself
+eureka.client.registerWithEureka= false  
+eureka.client.fetchRegistry= false
+
+#Turn off the self-protection and remove the node of the service
+eureka.server.enable-self-preservation= false
+
+#Clearance interval (unit millisecond, default is 60* 1000)
+eureka.server.eviction-interval-timer-in-ms=5000
+
+eureka.server.responseCacheUpdateIntervalMs=3
+
+#表示eureka client间隔多久去拉取服务注册信息，默认为30秒，对于api-gateway，如果要迅速获取服务注册状态，可以缩小该值，比如5秒
+eureka.client.registry-fetch-interval-seconds=5
+#leaseExpirationDurationInSeconds，表示eureka server至上一次收到client的心跳之后，等待下一次心跳的超时时间，在这个时间内若没收到下一次心跳，则将移除该instance。
+eureka.instance.lease-expiration-duration-in-seconds=8
+
+#The default setting for the environment is test can be set to formal
+#eureka.environment=Formal
+
+#config server register time
+eureka.instance.leaseRenewalIntervalInSeconds=5
+# config userName & passWord
+security.user.name=syhduser
+security.user.password=syhd1234
+# register address config
+eureka.client.serviceUrl.defaultZone=http://${security.user.name}:${security.user.password}@localhost:8766/eureka/

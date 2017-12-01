@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- UserTokenMap  用户令牌映射文件 -->
+<mapper namespace="com.syhd.user.mapper.IUserTokenMapper">
+    <resultMap type="com.syhd.user.model.UserTokenEbo" id="UserTokenEboMap">
+		<result property="id" column="id" jdbcType="VARCHAR" javaType="String" />
+		<result property="token" column="token" jdbcType="VARCHAR" javaType="String" />
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+        <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+        <result property="status" column="status" jdbcType="TINYINT" javaType="Integer" />
+        <result property="syhdUserId" column="syhd_user_id" jdbcType="VARCHAR" javaType="String" />
+	</resultMap>
+	<sql id="getUserTokenEbo">
+        SELECT
+            sut.id,sut.token,sut.create_time,sut.update_time,sut.expire_time,sut.status,sut.syhd_user_id
+        FROM
+            syhd_user_token AS sut
+	</sql>
+
+	<!-- 通过token,status获取userTokenEbo对象 -->
+	<select id="getUTokenByToken" resultMap="UserTokenEboMap" flushCache="true" useCache="false" >
+        <include refid="getUserTokenEbo"/>
+        <where>
+        	<if test=" token != null and token != ''  ">
+                sut.token = '${token}'
+          	</if>
+            <if test=" status &gt;= 0  ">
+                AND sut.status = ${status}
+            </if>
+        </where>
+        <!--使用倒序 -->
+        ORDER BY sut.create_time DESC
+    </select>
+
+    <!-- 通过uid,status获取userTokenEbo对象 -->
+    <select id="getUTokenByUId" resultMap="UserTokenEboMap" flushCache="true" useCache="false" >
+        <include refid="getUserTokenEbo"/>
+        <where>
+            <if test=" userId != null and userId != ''  ">
+                sut.syhd_user_id = '${userId}'
+            </if>
+            <if test=" status &gt;=  0  ">
+                AND sut.status = ${status}
+            </if>
+        </where>
+        <!--使用倒序 -->
+        ORDER BY sut.create_time DESC
+    </select>
+
+    <!-- 添加一个token-->
+    <insert id="addUserToken" parameterType="com.syhd.user.model.UserTokenEbo" useGeneratedKeys="true" keyProperty="uid" flushCache="true">
+		INSERT INTO syhd_user_token
+		VALUES(
+			#{id},#{token},#{createTime},#{updateTime},#{expireTime},#{status},#{syhdUserId}
+		)
+	</insert>
+
+    <!--通过 token id修改token状态 -->
+    <update id="updataUTokenStatus">
+        UPDATE
+            syhd_user_token AS sut
+        <set>
+            <if test=" status &gt;= 0 ">
+                sut.status=${status}
+            </if>
+        </set>
+        <where>
+            <if test="id !=null and id != '' ">
+                sut.id='${id}'
+            </if>
+            <if test="token != null and token != ''">
+                sut.token='${token}'
+            </if>
+        </where>
+    </update>
+</mapper>
+

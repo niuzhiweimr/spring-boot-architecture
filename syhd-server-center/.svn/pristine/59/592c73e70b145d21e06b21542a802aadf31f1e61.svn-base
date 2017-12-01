@@ -1,0 +1,4 @@
+#Renewal time interval (default 30 seconds)
+eureka.instance.lease-renewal-interval-in-seconds =5
+#When the lease expires (by default 90 seconds), the time can be shorter
+eureka.instance.lease-expiration-duration-in-seconds =10

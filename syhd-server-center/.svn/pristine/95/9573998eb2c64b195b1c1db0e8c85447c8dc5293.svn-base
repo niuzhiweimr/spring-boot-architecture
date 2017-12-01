@@ -1,0 +1,28 @@
+ server:  
+   port: 8818
+
+ spring:
+  application:
+    name: zuul
+
+ zuul:  
+  routes:
+    syhd-user-portal:  
+      service-id: uportal
+      path:  syhduser:syhd1234@/uportal/uportal/**
+    syhd-user:  
+      service-id: user  
+      path:   syhduser:syhd1234@/user/**
+    syhd-pay:  
+      service-id:  pay  
+      path:   syhduser:syhd1234@/pay/**
+
+
+
+ eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://syhduser:syhd1234@localhost:8766/eureka/ #http://syhduser:syhd1234@118.190.157.94/eureka/(服务端配置)
+    healthcheck:
+      enabled: true  #只应该在application.yml中设置。如果设置在bootstrap.yml中将会导致一些不良的副作用，例如在Eureka中注册的应用名称是UNKNOWN等
+
